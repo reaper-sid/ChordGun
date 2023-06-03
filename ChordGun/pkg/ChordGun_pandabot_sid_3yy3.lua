@@ -1,7 +1,7 @@
 -- @noindex
 --[[
 Description: ChordGun (eMod)
-Version: 1.9.3
+Version: 1.9.4
 Author: pandabot with edits by reaper-sid and 3YY3
 License: MIT
 Donation: https://paypal.me/benjohnson2001
@@ -1609,7 +1609,11 @@ function getNotesString(chordNotesArray)
     if i ~= #chordNotesArray then
       notesString = notesString .. noteName .. ','
     else
-      notesString = notesString .. noteName .. ''
+      if i > 4 then
+        notesString = '  ' .. notesString .. noteName .. ''
+      else
+        notesString = notesString .. noteName .. ''
+      end
     end
   end
 
@@ -5518,9 +5522,12 @@ function Interface:addChordTextLabel()
   local getChordTextCallback = function()
     return getChordText()
   end
-  local chordTextXpos = xMargin + xPadding
+  local windowWidth = interfaceWidth
+  local chordTextXpos = windowWidth / 2
+  -- local chordTextXpos = windowWidth / 4
   local chordTextYpos = yMargin + (4 * heightMultiple)
-  chordTextWidth = self.width - 4 * xMargin - inversionLabelWidth - inversionValueBoxWidth - (6 * widthMultiple)
+  -- chordTextWidth = self.width - 5 * xMargin - inversionLabelWidth - inversionValueBoxWidth - (6 * widthMultiple)
+  chordTextWidth = (6 * widthMultiple)
   local chordTextHeight = (24 * heightMultiple)
   self:addLabel(chordTextXpos + dockerXPadding, chordTextYpos, chordTextWidth, chordTextHeight, getChordTextCallback)
 end
