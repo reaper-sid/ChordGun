@@ -1,7 +1,7 @@
 -- @noindex
 --[[
 Description: ChordGun (eMod)
-Version: 1.9.1
+Version: 1.9.2
 Author: pandabot with edits by reaper-sid and 3YY3
 License: MIT
 Donation: https://paypal.me/benjohnson2001
