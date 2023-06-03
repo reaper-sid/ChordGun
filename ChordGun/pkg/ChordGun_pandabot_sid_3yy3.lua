@@ -1,7 +1,7 @@
 -- @noindex
 --[[
 Description: ChordGun (eMod)
-Version: 1.9.2
+Version: 1.9.3
 Author: pandabot with edits by reaper-sid and 3YY3
 License: MIT
 Donation: https://paypal.me/benjohnson2001
@@ -5216,6 +5216,12 @@ function Interface:update()
   end
 
   if currentWidth ~= gfx.w then
+    interfaceWidth = gfx.w -- was 1460
+    interfaceHeight = gfx.h -- was 788
+    widthMultiple = interfaceWidth / 1460 -- not configurable
+    heightMultiple = interfaceHeight / 788 -- not configurable
+    gfx.setfont(1, "Calibri", (26 * widthMultiple)) -- font selection
+
     self:restartGui()
   end
 
@@ -5340,12 +5346,12 @@ function Interface:addScaleNotesTextLabel()
 end
 
 function Interface:addOctaveLabel()
-
+  local windowWidth = interfaceWidth
   local labelText = "Octave:"
   octaveLabelWidth = gfx.measurestr(labelText)
   local labelYpos = yMargin + yPadding + (1 * heightMultiple)
   local labelHeight = (15 * heightMultiple)
-  local labelXpos = windowWidth - (80 * widthMultiple) - octaveValueBoxWidth
+  local labelXpos = windowWidth - (120 * widthMultiple) - (octaveValueBoxWidth * widthMultiple)
   self:addLabel(labelXpos + dockerXPadding, labelYpos, octaveLabelWidth, labelHeight, function()
     return labelText
   end)
@@ -5353,7 +5359,7 @@ end
 
 function Interface:addOctaveSelectorValueBox()
 
-  local windowWidth = (775 * widthMultiple)
+  local windowWidth = interfaceWidth
   local valueBoxXPos = windowWidth - octaveValueBoxWidth - xMargin - xPadding + (3 * widthMultiple)
   local valueBoxYPos = yMargin + (6 * heightMultiple)
   local valueBoxHeight = (15 * heightMultiple)
@@ -5490,7 +5496,7 @@ local yPadding = (30 * heightMultiple)
 
 local headerHeight = (25 * heightMultiple)
 local inversionLabelWidth = (80 * widthMultiple)
-local inversionValueBoxWidth = (55 * widthMultiple)
+local inversionValueBoxWidth = (80 * widthMultiple)
 local chordTextWidth = nil
 
 function Interface:addBottomFrame()
@@ -5520,9 +5526,10 @@ function Interface:addChordTextLabel()
 end
 
 function Interface:addInversionLabel()
-
+  local windowWidth = interfaceWidth
   local inversionLabelText = "Inversion:"
-  local inversionLabelXPos = xMargin + xPadding + chordTextWidth
+  -- local inversionLabelXPos = xMargin + xPadding + chordTextWidth + (4 * widthMultiple)
+  local inversionLabelXPos = windowWidth - (150 * widthMultiple)
   local inversionLabelYPos = yMargin + (4 * heightMultiple)
   local stringWidth, _ = gfx.measurestr(labelText)
   local inversionLabelTextHeight = (24 * heightMultiple)
@@ -5533,8 +5540,9 @@ function Interface:addInversionLabel()
 end
 
 function Interface:addInversionValueBox()
-
-  local inversionValueBoxXPos = xMargin + xPadding + chordTextWidth + inversionLabelWidth + 2
+  local windowWidth = interfaceWidth
+  -- local inversionValueBoxXPos = xMargin + xPadding + chordTextWidth + ((inversionLabelWidth + 2) * widthMultiple)
+  local inversionValueBoxXPos = windowWidth - inversionValueBoxWidth - xMargin - xPadding + (3 * widthMultiple)
   local inversionValueBoxYPos = yMargin + (9 * heightMultiple)
   local inversionValueBoxHeight = (15 * heightMultiple)
   self:addChordInversionValueBox(inversionValueBoxXPos + dockerXPadding, inversionValueBoxYPos, inversionValueBoxWidth, inversionValueBoxHeight)
