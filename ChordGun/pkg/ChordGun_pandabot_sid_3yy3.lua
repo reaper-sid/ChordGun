@@ -1,7 +1,7 @@
 -- @noindex
 --[[
 Description: ChordGun (eMod)
-Version: 1.9.4
+Version: 1.9.5
 Author: pandabot with edits by reaper-sid and 3YY3
 License: MIT
 Donation: https://paypal.me/benjohnson2001
@@ -4058,8 +4058,8 @@ end
 
 function Dropdown:drawImage()
 
-  local imageWidth = 14 * widthMultiple
-  gfx.x = self.x + self.width - imageWidth - 1
+  local imageWidth = 8 * widthMultiple
+  gfx.x = self.x + self.width - imageWidth
   gfx.y = self.y
   drawDropdownIcon()
 end
