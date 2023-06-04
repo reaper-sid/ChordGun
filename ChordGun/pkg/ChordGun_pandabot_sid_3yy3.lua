@@ -1,7 +1,7 @@
 -- @noindex
 --[[
 Description: ChordGun (eMod)
-Version: 1.9.5
+Version: 1.9.6
 Author: pandabot with edits by reaper-sid and 3YY3
 License: MIT
 Donation: https://paypal.me/benjohnson2001
@@ -206,13 +206,17 @@ local dockStateKey = "dockState"
 local windowShouldBeDockedKey = "shouldBeDocked"
 local interfaceXPositionKey = "interfaceXPosition"
 local interfaceYPositionKey = "interfaceYPosition"
+local interfaceW = "interfaceW"
+local interfaceH = "interfaceH"
 searchedChordKey = 1
 searchedChordType = 1
 
 --
 
 local function setValue(key, value)
-  reaper.SetProjExtState(activeProjectIndex, sectionName, key, value)
+  if value then
+    reaper.SetProjExtState(activeProjectIndex, sectionName, key, value)
+  end
 end
 
 local function getValue(key, defaultValue)
@@ -267,6 +271,23 @@ local function getTableValue(key, defaultValue)
 end
 
 --[[ ]] --
+
+function setWindowHeightWidth(height, width)
+  setValue(interfaceH, tostring(height))
+  setValue(interfaceW, tostring(width))
+end
+
+function getWindowHeightWidth()
+  heightValue = getValue(interfaceH, interfaceHeight)
+  widthValue = getValue(interfaceW, interfaceWidth)
+  if heightValue then
+    interfaceHeight = tonumber(heightValue)
+  end
+  if widthValue then
+    interfaceWidth = tonumber(widthValue)
+  end
+
+end
 
 function getScaleTonicNote()
   return tonumber(getValue(scaleTonicNoteKey, defaultScaleTonicNoteValue))
@@ -5058,16 +5079,16 @@ local dockerYPadding = 0
 function Interface:init(name)
 
   local self = {}
-  setmetatable(self, Interface)
 
   self.name = name
   self.x = getInterfaceXPosition()
   self.y = getInterfaceYPosition()
+  getWindowHeightWidth()
   self.width = interfaceWidth
   self.height = interfaceHeight
 
   self.elements = {}
-
+  setmetatable(self, Interface)
   return self
 end
 
@@ -5219,7 +5240,7 @@ function Interface:update()
     self:restartGui()
   end
 
-  if currentWidth ~= gfx.w then
+  if interfaceWidth ~= gfx.w or interfaceHeight ~= gfx.h or currentWidth == 0 then
     interfaceWidth = gfx.w -- was 1460
     interfaceHeight = gfx.h -- was 788
     widthMultiple = interfaceWidth / 1460 -- not configurable
@@ -5227,6 +5248,7 @@ function Interface:update()
     gfx.setfont(1, "Calibri", (26 * widthMultiple)) -- font selection
 
     self:restartGui()
+    setWindowHeightWidth(interfaceHeight, interfaceWidth)
   end
 
   if guiShouldBeUpdated then
@@ -5240,8 +5262,12 @@ function Interface:update()
   end
 
   local _, xpos, ypos, _, _ = gfx.dock(-1, 0, 0, 0, 0)
-  setInterfaceXPosition(xpos)
-  setInterfaceYPosition(ypos)
+  if xpos ~= oldXpos or ypos ~= oldYpos then
+    setInterfaceXPosition(xpos)
+    setInterfaceYPosition(ypos)
+    oldXpos = xpos
+    oldYpos = ypos
+  end
 
 end
 
