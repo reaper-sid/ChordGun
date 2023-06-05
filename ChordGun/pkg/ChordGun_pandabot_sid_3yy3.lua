@@ -1,7 +1,7 @@
 -- @noindex
 --[[
 Description: ChordGun (eMod)
-Version: 1.9.6
+Version: 1.9.7
 Author: pandabot with edits by reaper-sid and 3YY3
 License: MIT
 Donation: https://paypal.me/benjohnson2001
@@ -22,7 +22,8 @@ debugStatus = 0 -- 1 is debug mode on, 0 is off
 hcolor = "0f12d1" -- Hex value
 setTakeMarkers = 1 -- 1 is to create item markers 0 is off
 setNotationChords = 1 -- 1 is to create chords for notation view 0 is off
-ontop = 1 -- can be pinned always on top 0 or not 1
+setTextEvents = 1 -- 1 is to create chord names as text events 0 is off
+ontop = 0 -- can be pinned always on top 0 or not 1
 interfaceWidth = 600 -- was 1460
 interfaceHeight = 500 -- was 788
 widthMultiple = interfaceWidth / 1460 -- not configurable
@@ -1381,11 +1382,14 @@ function insertScaleChord(chordNotesArray, keepNotesSelected, selectedChord)
   debugMsg(tostring("ip: " .. item_pos))
   color = HexToInt(hcolor)
   -- insert new chordString text event (optional notation event, optional take marker)
-  reaper.MIDI_InsertTextSysexEvt(activeTake(), 1, 0, getCursorPositionPPQ(), 1, chordString)
+  if (setTextEvents > 0) then
+    reaper.MIDI_InsertTextSysexEvt(activeTake(), 1, 0, getCursorPositionPPQ(), 1, chordString)
+  end
   if (setNotationChords > 0) then
     reaper.MIDI_InsertTextSysexEvt(activeTake(), 1, 0, getCursorPositionPPQ(), 15, tostring("TRAC text " .. chordString))
   end
   if (setTakeMarkers > 0) then
+    debugMsg(tostring("setTakeMarkers: " .. setTakeMarkers))
     reaper.SetTakeMarker(activeTake(), -1, chordString, itemCursorPosition - item_pos, color | 16777216)
   end
 
@@ -5297,7 +5301,8 @@ local octaveValueBoxWidth = (55 * widthMultiple)
 keySelectionFrameHeight = (24 * heightMultiple)
 function Interface:addTopFrame()
 
-  self:addFrame(xMargin + dockerXPadding, yMargin, self.width - 2 * xMargin, keySelectionFrameHeight)
+  -- self:addFrame(xMargin + dockerXPadding, yMargin, self.width - 2 * xMargin, keySelectionFrameHeight)
+  self:addFrame(xMargin + dockerXPadding, yMargin, self.width, keySelectionFrameHeight)
   self:addScaleLabel()
   self:addScaleTonicNoteDropdown()
   self:addScaleTypeDropdown()
@@ -5613,7 +5618,7 @@ end
 function Interface:addKeyButtons()
   local keyButtonXPos = xMargin + xPadding + (8 * widthMultiple)
   local keyButtonYPos = yMargin + (3 * heightMultiple)
-  local keyButtonHeight = (6 * heightMultiple)
+  local keyButtonHeight = (5 * heightMultiple)
   local keyButtonWidth = (6 * widthMultiple)
   self:addKeyButton("Save Key", keyButtonXPos + dockerXPadding, keyButtonYPos, keyButtonWidth, keyButtonHeight)
   local stringWidth, stringHeight = gfx.measurestr(self.text)
